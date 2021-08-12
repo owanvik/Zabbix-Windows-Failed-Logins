@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.4</version>
+    <date>2021-08-12T09:47:42Z</date>
+    <groups>
+        <group>
+            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
+            <name>Templates</name>
+        </group>
+        <group>
+            <uuid>57b7ae836ca64446ba2c296389c009b7</uuid>
+            <name>Templates/Modules</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>ac25d4f44f73472b93ab72dc8717efbe</uuid>
+            <template>Template Module Windows Failed Logins</template>
+            <name>Template Module Windows Failed Logins</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+                <group>
+                    <name>Templates/Modules</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>d24237c0ca5e44849a03496966e696ff</uuid>
+                    <name>Failed logins</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>eventlog[Security,,,,4625,,skip]</key>
+                    <trends>0</trends>
+                    <value_type>LOG</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Failed logins</tag>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>9f3127744c9b42409200f00cd533a004</uuid>
+                            <expression>count(/Template Module Windows Failed Logins/eventlog[Security,,,,4625,,skip],{$TIME.FAILS.CRIT})&gt;{$NUM.FAILS.CRIT}</expression>
+                            <name>Over {$NUM.FAILS.CRIT} audit failures on {HOSTNAME} last {$TIME.FAILS.CRIT}</name>
+                            <priority>DISASTER</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                        <trigger>
+                            <uuid>31d31f3f7800468497c892619a05fef2</uuid>
+                            <expression>count(/Template Module Windows Failed Logins/eventlog[Security,,,,4625,,skip],{$TIME.FAILS.HIGH})&gt;{$NUM.FAILS.HIGH}</expression>
+                            <name>Over {$NUM.FAILS.HIGH} audit failures on {HOSTNAME} last {$TIME.FAILS.HIGH}</name>
+                            <priority>HIGH</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                        <trigger>
+                            <uuid>fb6b56228d91406899159eac84a97eed</uuid>
+                            <expression>count(/Template Module Windows Failed Logins/eventlog[Security,,,,4625,,skip],{$TIME.FAILS.WARN})&gt;{$NUM.FAILS.WARN}</expression>
+                            <name>Over {$NUM.FAILS.WARN} audit failures on {HOSTNAME} last {$TIME.FAILS.WARN}</name>
+                            <priority>WARNING</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>db699e390f9248eb8aa6c5ed4ddaeb62</uuid>
+                    <name>Account Domain</name>
+                    <type>DEPENDENT</type>
+                    <key>wfl.account.domain</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <parameters>
+                                <parameter>(?:Account Domain|Kontodomene):\t\t([^-\n]+)</parameter>
+                                <parameter>\1</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>eventlog[Security,,,,4625,,skip]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Failed logins</tag>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>6ff58e0d96564e549e874d3149cf22b6</uuid>
+                    <name>Account name</name>
+                    <type>DEPENDENT</type>
+                    <key>wfl.account.name</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <parameters>
+                                <parameter>(?:Account Name|Kontonavn):\t\t([^-\n]+)</parameter>
+                                <parameter>\1</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>eventlog[Security,,,,4625,,skip]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Failed logins</tag>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>d64c5cc3fa5f42f8bb5113f8dee55156</uuid>
+                    <name>Failed login</name>
+                    <type>DEPENDENT</type>
+                    <key>wfl.failed.login</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>A shorter summary containing user, domain, hostname and ip</description>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <parameters>
+                                <parameter>(?sm)(?:Account Name|Kontonavn):\t\t([^-\n]+).+(?:Account Domain|Kontodomene):\t\t([^-\n]+).+(?:Workstation Name|Navn på arbeidsstasjon):\t([^\n]+).+(?:Source Network Address|Adresse til kildenettverk):\t([^\n]+)</parameter>
+                                <parameter>User \2\\\1 failed to log on from \3 with IP-address \4</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>eventlog[Security,,,,4625,,skip]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Failed logins</tag>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>2c4405ff474b4126be00cf3fe82e0b48</uuid>
+                    <name>Source Network Address</name>
+                    <type>DEPENDENT</type>
+                    <key>wfl.source.network.address</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <parameters>
+                                <parameter>(?:Source Network Address|Adresse til kildenettverk):\t(.+)</parameter>
+                                <parameter>\1</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>eventlog[Security,,,,4625,,skip]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Failed logins</tag>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>fc40b01ad059497e8f9424978b954171</uuid>
+                    <name>Workstation name</name>
+                    <type>DEPENDENT</type>
+                    <key>wfl.workstation.name</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <parameters>
+                                <parameter>(?:Workstation Name|Navn på arbeidsstasjon):\t(.+)</parameter>
+                                <parameter>\1</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>eventlog[Security,,,,4625,,skip]</key>
+                    </master_item>
+                    <tags>
+                        <tag>
+                            <tag>Failed logins</tag>
+                        </tag>
+                    </tags>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$NUM.FAILS.CRIT}</macro>
+                    <value>500</value>
+                    <description>Number of fails</description>
+                </macro>
+                <macro>
+                    <macro>{$NUM.FAILS.HIGH}</macro>
+                    <value>100</value>
+                    <description>Number of fails</description>
+                </macro>
+                <macro>
+                    <macro>{$NUM.FAILS.WARN}</macro>
+                    <value>50</value>
+                    <description>Number of fails</description>
+                </macro>
+                <macro>
+                    <macro>{$TIME.FAILS.CRIT}</macro>
+                    <value>12h</value>
+                    <description>Time span of login failures</description>
+                </macro>
+                <macro>
+                    <macro>{$TIME.FAILS.HIGH}</macro>
+                    <value>12h</value>
+                    <description>Time span of login failures</description>
+                </macro>
+                <macro>
+                    <macro>{$TIME.FAILS.WARN}</macro>
+                    <value>12h</value>
+                    <description>Time span of login failures</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
